@@ -5,9 +5,9 @@ const taskController = {
     getAll: async (req, res) => {
         const user = req.token.id;
         const tasks = await Task.find({ active: true, user })
-        .sort({
-            date: 'desc'
-        });
+            .sort({
+                date: 'desc'
+            });
         const filteredTasks = tasks.map(task => {
             return {
                 idtask: task.id,
@@ -18,8 +18,6 @@ const taskController = {
                 createdAt: task.createdAt
             }
         });
-
-
 
         return res.status(200).json(filteredTasks);
     },
@@ -82,7 +80,7 @@ const taskController = {
 
         if (!taskUpdated) return res.status(400).json({ message: "Task not updated." });
 
-        return res.status(204);
+        return res.status(200).json({ message: "Task delete" });
     },
     complete: async (req, res) => {
         const { id } = req.params;
@@ -91,7 +89,7 @@ const taskController = {
         const taskUpdated = await Task.updateOne({ _id: id }, { complete: !taskFound.complete });
         if (!taskUpdated) return res.status(400).json({ message: "Task not updated." });
 
-        res.status(200);
+        return res.status(200).json({ message: "Task completed" });
     }
 }
 
