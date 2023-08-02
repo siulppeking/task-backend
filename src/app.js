@@ -6,7 +6,7 @@ const taskRouter = require('./routes/task.routes');
 
 const app = express();
 
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 app.use(express.json());
 
