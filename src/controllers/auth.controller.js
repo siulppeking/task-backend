@@ -19,7 +19,7 @@ const authController = {
 
             const token = await createAccessToken({ id: userFoundEmail._id });
 
-            res.status(200).json({
+            return res.status(200).json({
                 username: userFoundEmail.username,
                 email: userFoundEmail.email,
                 token
@@ -47,7 +47,7 @@ const authController = {
 
             const token = await createAccessToken({ id: userSaved._id });
 
-            res.status(200).json({
+            return res.status(200).json({
                 username: userSaved.username,
                 email: userSaved.email,
                 token
@@ -64,7 +64,8 @@ const authController = {
             if (err) return res.status(401).json({ message: 'Invalid token' });
             const userFound = await User.findById(token.id);
             if (!userFound) return res.status(401).json({ message: 'Invalid token' });
-            res.status(200).json({
+
+            return res.status(200).json({
                 id: userFound.id,
                 username: userFound.username,
                 email: userFound.email

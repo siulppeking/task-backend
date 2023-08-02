@@ -4,7 +4,10 @@ const Task = require('../models/task.model');
 const taskController = {
     getAll: async (req, res) => {
         const user = req.token.id;
-        const tasks = await Task.find({ active: true, user });
+        const tasks = await Task.find({ active: true, user })
+        .sort({
+            date: 'desc'
+        });
         const filteredTasks = tasks.map(task => {
             return {
                 idtask: task.id,
@@ -16,7 +19,9 @@ const taskController = {
             }
         });
 
-        res.status(200).json(filteredTasks);
+
+
+        return res.status(200).json(filteredTasks);
     },
     create: async (req, res) => {
         const user = req.token.id;
@@ -28,7 +33,7 @@ const taskController = {
         const taskSaved = await newTask.save();
         if (!taskSaved) return res.status(400).json({ message: "Task not saved." });
 
-        res.status(200).json({
+        return res.status(201).json({
             idtask: taskSaved._id,
             title: taskSaved.title,
             description: taskSaved.description,
@@ -42,13 +47,12 @@ const taskController = {
         const task = await Task.findById({ _id: id, user });
         if (!task) return res.status(400).json({ message: "Task not found." });
 
-        res.status(200).json({
+        return res.status(200).json({
             idtask: task.id,
             title: task.title,
             description: task.description,
             complete: task.complete,
-            date: task.date,
-            createdAt: task.createdAt
+            date: task.date
         });
     },
     update: async (req, res) => {
@@ -56,11 +60,12 @@ const taskController = {
         const { title, description, date } = req.body;
         const taskFound = await Task.findById({ _id: id });
         if (!taskFound) return res.status(400).json({ message: "Task not found." });
+
         const taskUpdated = await Task.updateOne({ _id: id }, { title, description, date });
 
         if (!taskUpdated) return res.status(400).json({ message: "Task not updated." });
 
-        res.status(200).json({
+        return res.status(200).json({
             idtask: taskUpdated._id,
             title: taskUpdated.title,
             description: taskUpdated.description,
@@ -77,7 +82,7 @@ const taskController = {
 
         if (!taskUpdated) return res.status(400).json({ message: "Task not updated." });
 
-        res.status(200).json({ message: "Task deleted successfully." });
+        return res.status(204);
     },
     complete: async (req, res) => {
         const { id } = req.params;
@@ -86,7 +91,7 @@ const taskController = {
         const taskUpdated = await Task.updateOne({ _id: id }, { complete: !taskFound.complete });
         if (!taskUpdated) return res.status(400).json({ message: "Task not updated." });
 
-        res.status(200).json({ message: "Task completed successfully." });
+        res.status(200);
     }
 }
 

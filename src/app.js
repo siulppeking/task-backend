@@ -6,13 +6,18 @@ const taskRouter = require('./routes/task.routes');
 
 const app = express();
 
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 
 app.use(express.json());
 
 app.use(cors());
 
+/*app.use('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html')
+})*/
+
 app.use('/api', authRouter);
-app.use('/api/task', taskRouter)
+
+app.use('/api/task', taskRouter);
 
 module.exports = app;
